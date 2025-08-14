@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kalkulator Value</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Poppins:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --yellow: #ffd700;
+        --black: #000;
+        --white: #fff;
+        --muted: #a3a3a3;
+        --card: #0e0e0e;
+        --border: rgba(255, 255, 255, 0.08);
+        --shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+        --radius: 16px;
+        --t: 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+        --soft-red: #2a1012;
+        --soft-yellow: #1a1606;
+        --soft-green: #0e1a14;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        background: var(--black);
+        color: var(--white);
+        line-height: 1.6;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+          sans-serif;
+      }
+      a {
+        color: var(--yellow);
+        text-decoration: none;
+      }
+      .wrap {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 22px 16px 72px;
+      }
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        backdrop-filter: blur(8px);
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.9),
+          rgba(0, 0, 0, 0.55) 60%,
+          rgba(0, 0, 0, 0)
+        );
+        border-bottom: 1px solid var(--border);
+      }
+      .hero {
+        display: grid;
+        gap: 10px;
+        padding: 16px 16px;
+      }
+      @media (min-width: 760px) {
+        .hero {
+          grid-template-columns: 1fr auto;
+          align-items: center;
+        }
+      }
+      h1.title {
+        font-family: Poppins, Inter, sans-serif;
+        font-weight: 800;
+        margin: 0;
+      }
+      h1.title span {
+        color: var(--yellow);
+      }
+      .subtitle {
+        color: #d1d5db;
+        font-size: 0.95rem;
+        margin: 4px 0 0;
+      }
+      .badge {
+        justify-self: start;
+        margin-top: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255, 215, 0, 0.08);
+        border: 1px solid rgba(255, 215, 0, 0.35);
+        transition: box-shadow var(--t);
+      }
+      .badge .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--yellow);
+        box-shadow: 0 0 14px 4px rgba(255, 215, 0, 0.7),
+          0 0 30px 8px rgba(255, 215, 0, 0.25);
+        animation: pulse 1.8s infinite;
+      }
+      .badge.glow {
+        box-shadow: 0 0 22px 4px rgba(255, 215, 0, 0.35);
+      }
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        60% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      .lang {
+        background: #0f0f0f;
+        border: 1px solid var(--border);
+        color: #fff;
+        padding: 10px 12px;
+        border-radius: 10px;
+      }
+      .grid {
+        display: grid;
+        gap: 16px;
+        margin-top: 16px;
+      }
+      .cols-2 {
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 760px) {
+        .cols-2 {
+          grid-template-columns: 1.1fr 1fr;
+        }
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 16px;
+      }
+      .card h3 {
+        margin: 0 0 8px;
+        font-family: Poppins, sans-serif;
+      }
+      .desc {
+        color: var(--muted);
+        font-size: 0.95rem;
+        margin: 2px 0 12px;
+      }
+      .fields {
+        display: grid;
+        gap: 12px;
+      }
+      .field {
+        display: grid;
+        gap: 6px;
+      }
+      label {
+        color: #d1d5db;
+      }
+      .control {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #0f0f0f;
+        border: 1px solid var(--border);
+        padding: 12px 14px;
+        border-radius: 12px;
+      }
+      .control:focus-within {
+        border-color: rgba(255, 215, 0, 0.5);
+      }
+      .control input {
+        flex: 1;
+        background: transparent;
+        border: 0;
+        outline: 0;
+        color: #fff;
+        font-size: 1rem;
+      }
+      .suffix {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .help {
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+      .select {
+        display: flex;
+        gap: 10px;
+      }
+
+      /* === Custom Select (tema hitam–kuning) === */
+      .select-wrap {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+      }
+      .select-wrap select {
+        width: 100%;
+        background: #1a1a1a;
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 12px 44px 12px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        cursor: pointer;
+        transition: border-color var(--t), box-shadow var(--t);
+      }
+      .select-wrap:hover select {
+        border-color: rgba(255, 215, 0, 0.45);
+      }
+      .select-wrap:focus-within select {
+        border-color: rgba(255, 215, 0, 0.75);
+        box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.15);
+        outline: none;
+      }
+      .select-wrap::after {
+        content: "";
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        width: 10px;
+        height: 10px;
+        border-right: 2px solid var(--yellow);
+        border-bottom: 2px solid var(--yellow);
+        transform: translateY(-60%) rotate(45deg);
+        pointer-events: none;
+        filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.25));
+      }
+      select option {
+        background: #151515;
+        color: #fff;
+      }
+      @media (forced-colors: active) {
+        .select-wrap select {
+          border: 1px solid CanvasText;
+          background: Canvas;
+          color: CanvasText;
+        }
+        .select-wrap::after {
+          display: none;
+        }
+      }
+
+      /* progress */
+      .progress {
+        height: 12px;
+        background: #0f0f0f;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e);
+        transition: width 450ms ease;
+      }
+      .progress-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        color: #d1d5db;
+        font-size: 0.95rem;
+        margin-top: 8px;
+      }
+      .meta-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .meta-desc {
+        color: #a3a3a3;
+        font-size: 0.9rem;
+      }
+
+      /* KPI cards */
+      .kpi {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        background: #0f0f0f;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px;
+        transition: transform var(--t), border var(--t);
+      }
+      .kpi:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255, 215, 0, 0.35);
+      }
+      .kpi .label {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .kpi .value {
+        font-family: Poppins, sans-serif;
+        font-size: 1.15rem;
+      }
+      .kpi .hint {
+        color: #a3a3a3;
+        font-size: 0.9rem;
+      }
+
+      /* Motive / recommendation */
+      .motive {
+        border-radius: 16px;
+        padding: 16px;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+      .motive.low {
+        background: linear-gradient(180deg, var(--soft-red), #080808);
+        border-color: rgba(255, 107, 107, 0.25);
+      }
+      .motive.edge {
+        background: linear-gradient(180deg, var(--soft-yellow), #080808);
+        border-color: rgba(255, 229, 109, 0.25);
+      }
+      .motive.high {
+        background: linear-gradient(180deg, var(--soft-green), #080808);
+        border-color: rgba(71, 232, 129, 0.25);
+      }
+      .motive h4 {
+        margin: 0 0 6px;
+        font-family: Poppins, sans-serif;
+      }
+
+      /* Big verdict under motive */
+      .big-verdict {
+        margin-top: 10px;
+        text-align: center;
+        font-family: Poppins, sans-serif;
+        font-weight: 800;
+        font-size: clamp(1.4rem, 3.8vw, 2.4rem);
+        padding: 10px 14px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+      }
+      .big-verdict.low {
+        background: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.35);
+      }
+      .big-verdict.edge {
+        background: rgba(245, 158, 11, 0.1);
+        border-color: rgba(245, 158, 11, 0.35);
+      }
+      .big-verdict.high {
+        background: rgba(34, 197, 94, 0.1);
+        border-color: rgba(34, 197, 94, 0.35);
+      }
+
+      /* buttons & misc */
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .btn {
+        appearance: none;
+        border: 0;
+        outline: 0;
+        cursor: pointer;
+        background: var(--yellow);
+        color: #000;
+        font-weight: 800;
+        padding: 12px 16px;
+        border-radius: 12px;
+        transition: transform var(--t), filter var(--t);
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.05);
+      }
+      .ghost {
+        background: transparent;
+        color: var(--yellow);
+        border: 1px solid rgba(255, 215, 0, 0.5);
+      }
+      footer {
+        margin-top: 24px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .hr {
+        height: 1px;
+        background: var(--border);
+        margin: 12px 0 16px;
+      }
+      .toast {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        background: #0f0f0f;
+        color: #fff;
+        border: 1px solid var(--border);
+        padding: 10px 12px;
+        border-radius: 10px;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all var(--t);
+        box-shadow: var(--shadow);
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .credit a:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255, 215, 0, 0.6);
+        background: rgba(255, 215, 0, 0.15);
+      }
+      .small {
+        font-size: 0.9rem;
+        color: #d1d5db;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap hero">
+        <div>
+          <h1 class="title">
+            <span data-i="app">Kalkulator </span> :
+            <span data-i="title">Untung Nggak Punya Barang Ini?</span>
+          </h1>
+          <p class="subtitle" data-i="subtitle">
+            Isi data sederhana di bawah. Hasil langsung menunjukkan: Nilai
+            sekarang, Untung/Impas/Rugi, dan Saran.
+          </p>
+          <div class="badge" id="liveBadge" aria-live="polite">
+            <span class="dot" aria-hidden="true"></span>
+            <span class="small" data-i="badge">Status</span>
+            <strong id="statusNow">—</strong>
+          </div>
+        </div>
+        <div>
+          <select id="lang" class="lang" aria-label="Language">
+            <option value="id" selected>Indonesia</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div class="grid cols-2">
+        <!-- INPUT -->
+        <section class="card" aria-labelledby="fTitle">
+          <h3 id="fTitle" data-i="formTitle">Data Barang</h3>
+          <p class="desc" data-i="formDesc">
+            Gunakan angka realistis. Kondisi memengaruhi nilai pasar saat ini.
+          </p>
+
+          <div class="fields">
+            <div class="field">
+              <label for="buy" data-i="buy">Harga beli baru</label>
+              <div class="control">
+                <input
+                  id="buy"
+                  type="number"
+                  min="0"
+                  step="1000"
+                  placeholder="contoh: 8.000.000"
+                />
+                <span class="suffix">Rp</span>
+              </div>
+              <div class="help" data-i="buyHelp">
+                Harga saat kamu pertama membeli.
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="now" data-i="now">Harga pasar sekarang</label>
+              <div class="control">
+                <input
+                  id="now"
+                  type="number"
+                  min="0"
+                  step="1000"
+                  placeholder="contoh: 5.000.000"
+                />
+                <span class="suffix">Rp</span>
+              </div>
+              <div class="help" data-i="nowHelp">
+                Harga pasaran saat ini (cek marketplace/teman).
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="wish" data-i="wish"
+                >Perkiraan harga jual (opsional)</label
+              >
+              <div class="control">
+                <input
+                  id="wish"
+                  type="number"
+                  min="0"
+                  step="1000"
+                  placeholder="contoh: 5.200.000"
+                />
+                <span class="suffix">Rp</span>
+              </div>
+              <div class="help" data-i="wishHelp">
+                Isi jika kamu berencana menjual di waktu tertentu.
+              </div>
+            </div>
+
+            <div class="field">
+              <label data-i="age">Lama pemakaian</label>
+              <div class="control">
+                <input
+                  id="months"
+                  type="number"
+                  min="1"
+                  step="1"
+                  placeholder="contoh: 18"
+                />
+                <span class="suffix" data-i="months">bulan</span>
+              </div>
+              <div class="help" data-i="ageHelp">
+                Dihitung sejak kamu membeli sampai sekarang.
+              </div>
+            </div>
+
+            <div class="field">
+              <label data-i="cond">Kondisi barang</label>
+              <div class="select-wrap">
+                <select id="condition" aria-label="Kondisi barang">
+                  <option value="1.00" data-i="condA">
+                    Like New (Hampir Baru)
+                  </option>
+                  <option value="0.90" data-i="condB" selected>
+                    Good (Bagus)
+                  </option>
+                  <option value="0.75" data-i="condC">Fair (Cukup)</option>
+                  <option value="0.60" data-i="condD">
+                    Worn (Banyak Bekas Pakai)
+                  </option>
+                </select>
+              </div>
+              <div class="help" data-i="condHelp">
+                Semakin turun kondisinya, nilai pasar efektif berkurang.
+              </div>
+            </div>
+
+            <div class="actions">
+              <button id="copyBtn" class="btn" data-i="copy">
+                Salin Ringkasan
+              </button>
+              <button id="resetBtn" class="btn ghost" data-i="reset">
+                Reset
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- OUTPUT -->
+        <section class="card" aria-labelledby="rTitle">
+          <h3 id="rTitle" data-i="resultTitle">Hasil & Rekomendasi</h3>
+
+          <div>
+            <div
+              class="progress"
+              role="progressbar"
+              aria-label="Efisiensi Nilai"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
+              <div id="bar" class="bar"></div>
+            </div>
+            <div class="progress-meta">
+              <div class="meta-row">
+                <span id="effText">Eff: 0%</span>
+                <span id="effDesc" class="meta-desc">—</span>
+              </div>
+              <div class="meta-row">
+                <span id="depText">%Dep: 0%</span>
+                <span id="depDesc" class="meta-desc">—</span>
+              </div>
+              <div class="meta-row">
+                <span id="cpdText">/Hari: Rp0 | /Bulan: Rp0</span>
+                <span id="cpdDesc" class="meta-desc">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid" style="grid-template-columns: 1fr 1fr">
+            <div class="kpi">
+              <span class="label" data-i="nowVal"
+                >Nilai sekarang (lihat kondisi)</span
+              >
+              <div id="valNow" class="value">Rp0</div>
+              <div id="valNowDesc" class="hint">—</div>
+            </div>
+            <div class="kpi">
+              <span class="label" data-i="plNow">Selisih dari harga beli</span>
+              <div id="plNow" class="value">Rp0</div>
+              <div id="plNowDesc" class="hint">—</div>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+
+          <div id="motive" class="motive edge" role="status" aria-live="polite">
+            <h4 id="motiveTitle">Zona aman tipis</h4>
+            <p id="motiveText">
+              Isi datamu untuk melihat rekomendasi. Pastikan lama pemakaian
+              tidak 0.
+            </p>
+            <!-- BIG VERDICT just below motive text -->
+            <div id="bigVerdict" class="big-verdict edge">—</div>
+          </div>
+        </section>
+      </div>
+
+      <footer>
+        <p data-i="footerTip">
+          Catatan: Nilai sekarang = Harga pasar × faktor kondisi. Depresiasi
+          hanya pendekatan.
+        </p>
+        <div class="hr"></div>
+        <div class="credit">
+          <blockquote
+            data-i="quote"
+            style="
+              font-style: italic;
+              color: #d1d5db;
+              margin: 12px 0;
+              margin-top: 3rem;
+
+              padding-left: 12px;
+              border-left: 3px solid var(--yellow);
+            "
+          >
+            "Kearifan sejati bukanlah memiliki banyak barang, tetapi memahami
+            nilai sejati dari apa yang kita miliki."
+          </blockquote>
+          <div style="text-align: center; margin-top: 16px">
+            <p
+              style="margin: 6px 0; color: #fff; font-weight: 600"
+              data-i="createdBy"
+            >
+              Dibuat oleh
+            </p>
+            <p
+              style="
+                margin: 4px 0;
+                font-size: 1.1rem;
+                color: var(--yellow);
+                font-weight: 800;
+              "
+            >
+              Yusma Rahman
+            </p>
+            <div
+              style="
+                display: flex;
+                justify-content: center;
+                gap: 16px;
+                margin-top: 12px;
+              "
+            >
+              <a
+                href="https://github.com/yusma1122"
+                target="_blank"
+                rel="noopener noreferrer"
+                style="
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 6px;
+                  padding: 8px 12px;
+                  background: rgba(255, 215, 0, 0.1);
+                  border: 1px solid rgba(255, 215, 0, 0.3);
+                  border-radius: 8px;
+                  transition: all var(--t);
+                  text-decoration: none;
+                "
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                  />
+                </svg>
+                <span style="font-size: 0.9rem" data-i="github">GitHub</span>
+              </a>
+              <a
+                href="https://www.linkedin.com/in/yusmarahman09/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style="
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 6px;
+                  padding: 8px 12px;
+                  background: rgba(255, 215, 0, 0.1);
+                  border: 1px solid rgba(255, 215, 0, 0.3);
+                  border-radius: 8px;
+                  transition: all var(--t);
+                  text-decoration: none;
+                "
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+                  />
+                </svg>
+                <span style="font-size: 0.9rem" data-i="linkedin"
+                  >LinkedIn</span
+                >
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <div id="toast" class="toast">Ringkasan disalin</div>
+
+    <script>
+      const STR = {
+        id: {
+          app: "Kalkulator",
+          title: "Untung Nggak Punya Barang Ini?",
+          subtitle:
+            "Isi data sederhana di bawah. Hasil langsung menunjukkan: Nilai sekarang, Untung/Impas/Rugi, dan Saran.",
+          badge: "Status",
+          formTitle: "Data Barang",
+          formDesc:
+            "Gunakan angka realistis. Kondisi memengaruhi nilai pasar saat ini.",
+          buy: "Harga beli baru",
+          buyHelp: "Harga saat kamu pertama membeli.",
+          now: "Harga pasar sekarang",
+          nowHelp: "Harga pasaran saat ini (cek marketplace/teman).",
+          wish: "Perkiraan harga jual (opsional)",
+          wishHelp: "Isi jika kamu berencana menjual di waktu tertentu.",
+          age: "Lama pemakaian",
+          months: "bulan",
+          ageHelp: "Dihitung sejak kamu membeli sampai sekarang.",
+          cond: "Kondisi barang",
+          condA: "Like New (Hampir Baru)",
+          condB: "Good (Bagus)",
+          condC: "Fair (Cukup)",
+          condD: "Worn (Banyak Bekas Pakai)",
+          condHelp: "Semakin turun kondisinya, nilai pasar efektif berkurang.",
+          copy: "Salin Ringkasan",
+          reset: "Reset",
+          resultTitle: "Hasil & Rekomendasi",
+          nowVal: "Nilai sekarang (lihat kondisi)",
+          plNow: "Selisih dari harga beli",
+          footerTip:
+            "Catatan: Nilai sekarang = Harga pasar × faktor kondisi. Depresiasi hanya pendekatan.",
+          quote:
+            "Kearifan sejati bukanlah memiliki banyak barang, tetapi memahami nilai sejati dari apa yang kita miliki.",
+          createdBy: "Dibuat oleh",
+          github: "GitHub",
+          linkedin: "LinkedIn",
+        },
+        en: {
+          app: "Calculator",
+          title: "Is Owning This Item Worth It?",
+          subtitle:
+            "Fill simple fields below. See: Current value, Profit/Break-even/Loss, and Advice.",
+          badge: "Status",
+          formTitle: "Item Data",
+          formDesc:
+            "Use realistic numbers. Condition affects current market value.",
+          buy: "Original purchase price",
+          buyHelp: "Price when you first bought it.",
+          now: "Current market price",
+          nowHelp: "Going price today (check marketplace/friends).",
+          wish: "Expected selling price (optional)",
+          wishHelp: "Fill if you plan to sell later.",
+          age: "Usage length",
+          months: "months",
+          ageHelp: "From purchase date until today.",
+          cond: "Item condition",
+          condA: "Like New",
+          condB: "Good",
+          condC: "Fair",
+          condD: "Worn",
+          condHelp: "Worse condition reduces effective market value.",
+          copy: "Copy Summary",
+          reset: "Reset",
+          resultTitle: "Results & Recommendation",
+          nowVal: "Current value (cond. adjusted)",
+          plNow: "Difference from purchase price",
+          footerTip:
+            "Note: Current value = Market price × condition factor. Depreciation is an estimate.",
+          quote:
+            "True wisdom isn't having many things, but understanding the real value of what we own.",
+          createdBy: "Created by",
+          github: "GitHub",
+          linkedin: "LinkedIn",
+        },
+      };
+
+      const $ = (id) => document.getElementById(id);
+      const cf0 = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0,
+      });
+
+      const els = {
+        buy: $("buy"),
+        now: $("now"),
+        wish: $("wish"),
+        months: $("months"),
+        cond: $("condition"),
+        bar: $("bar"),
+        effText: $("effText"),
+        effDesc: $("effDesc"),
+        depText: $("depText"),
+        depDesc: $("depDesc"),
+        cpdText: $("cpdText"),
+        cpdDesc: $("cpdDesc"),
+        valNow: $("valNow"),
+        valNowDesc: $("valNowDesc"),
+        plNow: $("plNow"),
+        plNowDesc: $("plNowDesc"),
+        motive: $("motive"),
+        motiveTitle: $("motiveTitle"),
+        motiveText: $("motiveText"),
+        bigVerdict: $("bigVerdict"),
+        liveBadge: $("liveBadge"),
+        statusNow: $("statusNow"),
+        copyBtn: $("copyBtn"),
+        resetBtn: $("resetBtn"),
+        toast: $("toast"),
+        lang: $("lang"),
+      };
+
+      // defaults contoh
+      els.buy.value = 8000000;
+      els.now.value = 5000000;
+      els.wish.value = 5200000;
+      els.months.value = 18;
+
+      function clamp(n, a, b) {
+        return Math.min(Math.max(n, a), b);
+      }
+
+      function calc() {
+        const B = +els.buy.value || 0;
+        const Jnow = +els.now.value || 0;
+        const Jwish = +els.wish.value || 0;
+        const m = clamp(+els.months.value || 0, 0, 600);
+        const k = parseFloat(els.cond.value) || 1;
+
+        const isEN = els.lang.value === "en";
+        const T = (id, en) => (isEN ? en : id);
+
+        const valNow = Jnow * k;
+        const plNow = valNow - B;
+        const depPctNow = B > 0 ? Math.round(((B - valNow) / B) * 100) : 0;
+        const effPct = B > 0 ? Math.round((valNow / B) * 100) : 0;
+        const cpd = m > 0 ? Math.round(Math.max(B - valNow, 0) / (m * 30)) : 0; // ~per hari
+        const cpm = m > 0 ? Math.round(Math.max(B - valNow, 0) / m) : 0;
+
+        // status & rekomendasi
+        let tier = "edge",
+          title = T("Zona aman tipis", "Borderline—consider");
+        let text = T(
+          "Isi datamu untuk melihat rekomendasi. Pastikan lama pemakaian tidak 0.",
+          "Fill your data. Make sure usage length isn't 0."
+        );
+        let status = "—",
+          big = "—";
+
+        if (B > 0 && Jnow > 0 && m > 0) {
+          if (plNow > 0) {
+            tier = "high";
+            title = T("Untung jika dijual sekarang", "Profit if sold now");
+            text = T(
+              "Nilai pasar lebih tinggi dari harga beli. Jika tidak butuh lagi, ini waktu yang baik untuk jual.",
+              "Market value is higher than your purchase. If you don't need it, it's a good time to sell."
+            );
+            status = T("UNTUNG", "PROFIT");
+            big = status;
+          } else if (Math.abs(plNow) <= B * 0.05) {
+            tier = "edge";
+            title = T("Impas (selisih tipis)", "Break-even (small difference)");
+            text = T(
+              "Selisih kecil. Jika masih sering dipakai dan biaya per hari rendah, pertahankan.",
+              "Small difference. If you use it often and daily cost is low, keep it."
+            );
+            status = T("IMPAS", "BREAK-EVEN");
+            big = status;
+          } else {
+            tier = "low";
+            title = T("Rugi jika dijual sekarang", "Loss if sold now");
+            text = T(
+              "Jika jarang dipakai, pertimbangkan jual agar kerugian tidak bertambah. Jika sering dipakai dan CPD rendah, masih layak ditahan.",
+              "If you rarely use it, consider selling to stop further loss. If used often and daily cost is low, keeping it can still be fine."
+            );
+            status = T("RUGI", "LOSS");
+            big = status;
+          }
+
+          if (Jwish > 0) {
+            const valWish = Jwish * k;
+            const deltaWish = valWish - valNow;
+            if (Math.abs(deltaWish) >= B * 0.03) {
+              text +=
+                " " +
+                (deltaWish > 0
+                  ? T(
+                      "Perkiraan jual nanti lebih tinggi—boleh tunggu momen, tapi perhatikan risiko harga turun.",
+                      "Expected future price is higher—okay to wait, but mind the risk of price drops."
+                    )
+                  : T(
+                      "Perkiraan jual nanti tidak jauh lebih baik—menunggu belum tentu sepadan.",
+                      "Expected future price isn't much better—waiting may not be worth it."
+                    ));
+            }
+          }
+        }
+
+        // UI angka
+        els.valNow.textContent = cf0.format(Math.round(valNow));
+        els.plNow.textContent =
+          (plNow >= 0 ? "+" : "") + cf0.format(Math.round(plNow));
+        els.depText.textContent =
+          (isEN ? "%Dep: " : "%Dep: ") + clamp(depPctNow, 0, 100) + "%";
+        els.effText.textContent =
+          (isEN ? "Eff: " : "Eff: ") + clamp(effPct, 0, 100) + "%";
+        els.cpdText.textContent =
+          (isEN ? "/Day: " : "/Hari: ") +
+          cf0.format(cpd) +
+          (isEN ? " | /Month: " : " | /Bulan: ") +
+          cf0.format(cpm);
+
+        // Deskripsi awam tiap metrik
+        els.effDesc.textContent = T(
+          `Efisiensi Nilai: sekitar ${effPct}% dari nilai beli masih tersisa.`,
+          `Value Efficiency: about ${effPct}% of your purchase value remains.`
+        );
+        els.depDesc.textContent = T(
+          `Penyusutan: barang sudah turun sekitar ${clamp(
+            depPctNow,
+            0,
+            100
+          )}% dari harga beli.`,
+          `Depreciation: item has lost ~${clamp(
+            depPctNow,
+            0,
+            100
+          )}% of its purchase value.`
+        );
+        els.cpdDesc.textContent = T(
+          `Biaya pakai rata-rata: inilah "biaya memegang" barang per hari/bulan sejauh ini.`,
+          `Average holding cost: what it "costs" you per day/month so far.`
+        );
+        els.valNowDesc.textContent = T(
+          `Perkiraan harga jika dijual sekarang, setelah melihat kondisi barang.`,
+          `Estimated selling price now, after adjusting for item condition.`
+        );
+        els.plNowDesc.textContent =
+          plNow >= 0
+            ? T(
+                "Positif = untung jika dijual sekarang.",
+                "Positive = profit if sold now."
+              )
+            : Math.abs(plNow) <= B * 0.05
+            ? T(
+                "Selisih kecil = kurang lebih impas.",
+                "Small difference = roughly break-even."
+              )
+            : T(
+                "Negatif = rugi jika dijual sekarang.",
+                "Negative = loss if sold now."
+              );
+
+        // progress bar pakai efisiensi
+        const width = clamp(effPct, 0, 100);
+        els.bar.style.width = width + "%";
+
+        // badge status
+        const prev = els.statusNow.dataset.prev || "";
+        if (prev !== status) {
+          els.liveBadge.classList.add("glow");
+          setTimeout(() => els.liveBadge.classList.remove("glow"), 250);
+          els.statusNow.dataset.prev = status;
+        }
+        els.statusNow.textContent = status || "—";
+
+        // motive & big verdict
+        els.motive.classList.remove("low", "edge", "high");
+        els.motive.classList.add(tier);
+        els.motiveTitle.textContent = title;
+        els.motiveText.textContent = text;
+
+        els.bigVerdict.textContent = big || (isEN ? "—" : "—");
+        els.bigVerdict.classList.remove("low", "edge", "high");
+        els.bigVerdict.classList.add(tier);
+
+        return {
+          B,
+          Jnow,
+          Jwish,
+          k,
+          m,
+          valNow,
+          plNow,
+          depPctNow,
+          effPct,
+          cpd,
+          cpm,
+          status,
+          title,
+          text,
+        };
+      }
+
+      function summary(d) {
+        const isEN = els.lang.value === "en";
+        const L = (id, en) => (isEN ? en : id);
+        return [
+          L("— RINGKASAN —", "— SUMMARY —"),
+          L("Harga beli: ", "Purchase: ") + cf0.format(d.B),
+          L("Nilai sekarang (lihat kondisi): ", "Current value (cond.): ") +
+            cf0.format(Math.round(d.valNow)),
+          L("Selisih dari harga beli: ", "Diff vs purchase: ") +
+            (d.plNow >= 0 ? "+" : "") +
+            cf0.format(Math.round(d.plNow)),
+          (isEN ? "/Day: " : "/Hari: ") +
+            cf0.format(d.cpd) +
+            (isEN ? " | /Month: " : " | /Bulan: ") +
+            cf0.format(d.cpm),
+          L("Efisiensi nilai tersisa: ", "Remaining value efficiency: ") +
+            d.effPct +
+            "%",
+          L("Status: ", "Status: ") + (d.status || "—"),
+          L("Saran: ", "Advice: ") + d.title,
+        ].join("\n");
+      }
+
+      const inputs = ["buy", "now", "wish", "months", "condition"];
+      inputs.forEach((id) =>
+        document.getElementById(id).addEventListener("input", calc)
+      );
+
+      // Copy
+      function showToast(msg) {
+        els.toast.textContent = msg;
+        els.toast.classList.add("show");
+        setTimeout(() => els.toast.classList.remove("show"), 1800);
+      }
+      els.copyBtn.addEventListener("click", async () => {
+        const d = calc();
+        try {
+          await navigator.clipboard.writeText(summary(d));
+          showToast(
+            els.lang.value === "en" ? "Summary copied" : "Ringkasan disalin"
+          );
+        } catch (e) {
+          showToast(els.lang.value === "en" ? "Copy failed" : "Gagal menyalin");
+        }
+      });
+
+      // Reset
+      els.resetBtn.addEventListener("click", () => {
+        ["buy", "now", "wish", "months"].forEach((k) => {
+          const el = document.getElementById(k);
+          if (el) el.value = "";
+        });
+        document.getElementById("condition").value = "0.90";
+        calc();
+      });
+
+      // i18n apply
+      function applyLang(lang) {
+        const dict = STR[lang];
+        document.querySelectorAll("[data-i]").forEach((el) => {
+          const key = el.getAttribute("data-i");
+          if (dict[key] !== undefined) el.textContent = dict[key];
+        });
+        document.documentElement.lang = lang === "en" ? "en" : "id";
+        calc();
+      }
+      document
+        .getElementById("lang")
+        .addEventListener("change", (e) => applyLang(e.target.value));
+
+      // init
+      applyLang("id"); // default Indonesia
+      calc();
+    </script>
+  </body>
+</html>
